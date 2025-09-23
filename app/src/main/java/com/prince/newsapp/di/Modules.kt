@@ -1,5 +1,6 @@
 package com.prince.newsapp.di
 
+import com.prince.newsapp.network.NewsApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,5 +41,9 @@ object NetworkModule {
             .build()
     }
 
-
+    @Provides
+    @Singleton
+    fun provideNewsApiService(retrofit: Retrofit): NewsApiService {
+        return retrofit.create(NewsApiService::class.java)
+    }
 }
