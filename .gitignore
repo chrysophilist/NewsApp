@@ -1,0 +1,63 @@
+
+# Android Studio
+.idea/
+*.iml
+.navigation/
+/captures
+
+# Gradle
+.gradle
+.gradle/
+/build
+*/build/
+gradle-app.setting
+
+# Local configuration
+/local.properties
+local.properties
+*.properties
+signing.properties
+.secrets.properties
+
+# Keystore & sensitive files
+*.jks
+*.keystore
+dev.keystore
+pkcs11.password
+maps.key
+kls_database.db
+google-services.json
+
+# App build outputs
+*.apk
+*.aab
+
+# Dalvik / ART / Java
+*.dex
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Native / NDK builds
+.externalNativeBuild/
+.cxx/
+obj/
+
+# Logs
+*.log
+build.log
+build-log.xml
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
