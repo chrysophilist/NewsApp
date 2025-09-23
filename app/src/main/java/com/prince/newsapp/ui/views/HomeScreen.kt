@@ -110,7 +110,7 @@ fun NewsCard(article: Article) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            article.urlToImage.let { image ->
+            article.urlToImage?.let { image ->
                 AsyncImage(
                     model = image,
                     contentDescription = article.title,
@@ -138,7 +138,7 @@ fun NewsCard(article: Article) {
                 color = MaterialTheme.colorScheme.primary
             )
 
-            article.description.let { description ->
+            article.description?.let { description ->
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = article.description,
