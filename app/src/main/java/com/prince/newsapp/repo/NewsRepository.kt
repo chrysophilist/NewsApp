@@ -10,7 +10,7 @@ class NewsRepository @Inject constructor(
     private val api: NewsApiService
 ) {
 
-    private val apiKey = BuildConfig.API_KEY
+    private val apiKey = BuildConfig.NEWS_API_KEY
 
     suspend fun getTopHeadlines(
         country: String = "us",

@@ -38,8 +38,7 @@ import com.prince.newsapp.viewModels.NewsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: NewsViewModel = hiltViewModel(),
-    modifier: Modifier
+    viewModel: NewsViewModel = hiltViewModel()
 ) {
     val articles by viewModel.articles.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
