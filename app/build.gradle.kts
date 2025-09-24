@@ -11,6 +11,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "2.2.20"
 }
 
 val apiKey: String = gradleLocalProperties(project.rootDir, providers)
@@ -92,4 +93,10 @@ dependencies {
 
     // Image loading
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    // Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.9.4")
 }
