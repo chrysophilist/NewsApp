@@ -37,13 +37,12 @@ class NewsRepository @Inject constructor(
             if (response.isSuccessful) {
                 val articlesList = response.body()?.articles ?: emptyList()
                 val articlesWithIds = articlesList.map { article ->
-                    val id = if (article.id.isBlank()) Article.createId(article.url, article.title)
-                    else article.id
+                    val id = article.id ?: Article.createId(article.url, article.title)
                     article.copy(id = id)
                 }
 
                 // cache
-                articlesWithIds.forEach { articlesCache[it.id] = it }
+                articlesWithIds.forEach { articlesCache[it.id!!] = it }
                 _articles.value = articlesWithIds
 
                 Result.success(articlesWithIds)

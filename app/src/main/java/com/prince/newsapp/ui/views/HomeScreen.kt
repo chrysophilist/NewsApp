@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.prince.newsapp.models.Article
+import com.prince.newsapp.viewModels.NewsUiState
 import com.prince.newsapp.viewModels.NewsViewModel
 
 
@@ -40,57 +41,56 @@ import com.prince.newsapp.viewModels.NewsViewModel
 fun HomeScreen(
     viewModel: NewsViewModel = hiltViewModel()
 ) {
-    val articles by viewModel.articles.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val error by viewModel.error.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold (
         topBar = {
             TopAppBar( title = { Text("News App") } )
         }
     ) { innerPadding ->
-        when {
-            isLoading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ){
+            when (uiState) {
+                is NewsUiState.Loading -> {
                     CircularProgressIndicator()
                 }
-            }
-
-            error != null -> {
-                Column (
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Text(
-                        text = error!!,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = {viewModel.fetchTopHeadlines()}
-                    ) {
-                        Text("Retry")
+                is NewsUiState.Error -> {
+                    val message = (uiState as NewsUiState.Error).message
+                    Column (
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        Text(
+                            text = message,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = {viewModel.retry()}
+                        ) {
+                            Text("Retry")
+                        }
                     }
                 }
-            }
-            else -> {
-                LazyColumn (
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ){
-                    items(articles) { article ->
-                        NewsCard(article = article)
+                is NewsUiState.Success -> {
+                    val articles = (uiState as NewsUiState.Success).articles
+                    LazyColumn (
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ){
+                        items(articles) { article ->
+                            NewsCard(article = article)
+                        }
                     }
                 }
             }
