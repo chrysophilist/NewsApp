@@ -16,14 +16,8 @@ class NewsViewModel @Inject constructor(
     private val repo: NewsRepository
 ) : ViewModel() {
 
-    private val _articles = MutableStateFlow<List<Article>>(emptyList())
-    val articles: StateFlow<List<Article>> = _articles.asStateFlow()
-
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error.asStateFlow()
+    private val _uiState = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
+    val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
 
     init {
         fetchTopHeadlines()
@@ -32,24 +26,22 @@ class NewsViewModel @Inject constructor(
     fun fetchTopHeadlines() {
 
         viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
+            _uiState.value = NewsUiState.Loading
 
-            try {
-                val response = repo.getTopHeadlines()
-                if (response.isSuccessful){
-                    response.body()?.let { newsResponse ->
-                        _articles.value = newsResponse.articles
-                    }
-                } else {
-                    _error.value = response.message()
+            repo.getTopHeadlines()
+                .onSuccess { articles: List<Article> ->
+                    _uiState.value = NewsUiState.Success(articles)
                 }
-            } catch (e: Exception) {
-                _error.value = "Network Error: ${e.message}"
-            } finally {
-                _isLoading.value = false
-            }
+                .onFailure { exception ->
+                    _uiState.value = NewsUiState.Error(
+                        exception.message ?: "Failed to load articles."
+                    )
+                }
         }
+    }
+
+    fun retry() {
+        fetchTopHeadlines()
     }
 
 }
