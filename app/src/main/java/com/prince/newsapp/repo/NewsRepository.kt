@@ -1,23 +1,65 @@
 package com.prince.newsapp.repo
 
-import com.prince.newsapp.models.NewsResponse
-import com.prince.newsapp.network.NewsApiService
-import retrofit2.Response
-import javax.inject.Inject
 import com.prince.newsapp.BuildConfig
+import com.prince.newsapp.models.Article
+import com.prince.newsapp.network.NewsApiService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class NewsRepository @Inject constructor(
     private val api: NewsApiService
 ) {
+    // In-memory cache
+    private val articlesCache = mutableMapOf<String, Article>()
+
+    // state flow for reactive updates
+    private val _articles = MutableStateFlow<List<Article>>(emptyList())
+    val articles: StateFlow<List<Article>> = _articles.asStateFlow()
 
     private val apiKey = BuildConfig.NEWS_API_KEY
 
     suspend fun getTopHeadlines(
         country: String = "us",
         category: String = "business"
-    ): Response<NewsResponse> {
+    ): Result<List<Article>> {
 
-        if (apiKey.isBlank()) throw IllegalStateException("API Key not found.")
-        return api.getTopHeadlines(country, category, apiKey)
+        return try {
+            if (apiKey.isBlank()) throw IllegalStateException("API Key not found.")
+
+            val response = api.getTopHeadlines(country, category, apiKey)
+
+            if (response.isSuccessful) {
+                val articlesList = response.body()?.articles ?: emptyList()
+                val articlesWithIds = articlesList.map { article ->
+                    val id = if (article.id.isBlank()) Article.createId(article.url, article.title)
+                    else article.id
+                    article.copy(id = id)
+                }
+
+                // cache
+                articlesWithIds.forEach { articlesCache[it.id] = it }
+                _articles.value = articlesWithIds
+
+                Result.success(articlesWithIds)
+            } else {
+                Result.failure(Exception("HTTPS ${response.body()} ${response.message()}"))
+            }
+        }
+        catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    fun getArticlesById(id: String): Article? = articlesCache[id]
+
+    fun getArticlesByIdFlow(id: String): Flow<Article?> = flow {
+        articlesCache[id]?.let { emit(it) }
+        if (articlesCache[id] == null) emit(null)
     }
 }
