@@ -1,5 +1,6 @@
 package com.prince.newsapp.ui.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,8 @@ import com.prince.newsapp.viewModels.NewsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: NewsViewModel = hiltViewModel()
+    viewModel: NewsViewModel = hiltViewModel(),
+    onArticleClick: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -89,7 +91,10 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ){
                         items(articles) { article ->
-                            NewsCard(article = article)
+                            NewsCard(
+                                article = article,
+                                onArticleClick = onArticleClick
+                            )
                         }
                     }
                 }
@@ -101,10 +106,15 @@ fun HomeScreen(
 
 
 @Composable
-fun NewsCard(article: Article) {
+fun NewsCard(
+    article: Article,
+    onArticleClick: (String) -> Unit
+) {
 
     Card(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable { article.id?.let { onArticleClick(it) } },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
