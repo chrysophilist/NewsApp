@@ -45,57 +45,48 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold (
-        topBar = {
-            TopAppBar( title = { Text("News App") } )
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
-        ){
-            when (uiState) {
-                is NewsUiState.Loading -> {
-                    CircularProgressIndicator()
-                }
-                is NewsUiState.Error -> {
-                    val message = (uiState as NewsUiState.Error).message
-                    Column (
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ){
-                        Text(
-                            text = message,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = {viewModel.retry()}
-                        ) {
-                            Text("Retry")
-                        }
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ){
+        when (uiState) {
+            is NewsUiState.Loading -> {
+                CircularProgressIndicator()
+            }
+            is NewsUiState.Error -> {
+                val message = (uiState as NewsUiState.Error).message
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {viewModel.retry()}
+                    ) {
+                        Text("Retry")
                     }
                 }
-                is NewsUiState.Success -> {
-                    val articles = (uiState as NewsUiState.Success).articles
-                    LazyColumn (
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ){
-                        items(articles) { article ->
-                            NewsCard(
-                                article = article,
-                                onArticleClick = onArticleClick
-                            )
-                        }
+            }
+            is NewsUiState.Success -> {
+                val articles = (uiState as NewsUiState.Success).articles
+                LazyColumn (
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ){
+                    items(articles) { article ->
+                        NewsCard(
+                            article = article,
+                            onArticleClick = onArticleClick
+                        )
                     }
                 }
             }
