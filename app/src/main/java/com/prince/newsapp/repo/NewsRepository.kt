@@ -34,21 +34,17 @@ class NewsRepository @Inject constructor(
 
             val response = api.getTopHeadlines(country, category, apiKey)
 
-            if (response.isSuccessful) {
-                val articlesList = response.body()?.articles ?: emptyList()
-                val articlesWithIds = articlesList.map { article ->
-                    val id = article.id ?: Article.createId(article.url, article.title)
-                    article.copy(id = id)
-                }
-
-                // cache
-                articlesWithIds.forEach { articlesCache[it.id!!] = it }
-                _articles.value = articlesWithIds
-
-                Result.success(articlesWithIds)
-            } else {
-                Result.failure(Exception("HTTPS ${response.body()} ${response.message()}"))
+            val articlesList = response.articles
+            val articlesWithIds = articlesList.map { article ->
+                val id = article.id ?: Article.createId(article.url, article.title)
+                article.copy(id = id)
             }
+
+            // cache
+            articlesWithIds.forEach { articlesCache[it.id!!] = it }
+            _articles.value = articlesWithIds
+
+            Result.success(articlesWithIds)
         }
         catch (e: Exception) {
             Result.failure(e)
@@ -57,8 +53,5 @@ class NewsRepository @Inject constructor(
 
     fun getArticlesById(id: String): Article? = articlesCache[id]
 
-    fun getArticlesByIdFlow(id: String): Flow<Article?> = flow {
-        articlesCache[id]?.let { emit(it) }
-        if (articlesCache[id] == null) emit(null)
-    }
+
 }
