@@ -75,10 +75,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:5.1.0")
+    // Ktor
+    implementation("io.ktor:ktor-client-core:2.1.3")
+    implementation("io.ktor:ktor-client-android:2.1.3")
+    implementation("io.ktor:ktor-client-content-negotiation:2.1.3")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.57.1")
@@ -95,7 +95,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Kotlin Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.3")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.9.4")
