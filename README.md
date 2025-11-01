@@ -38,6 +38,7 @@ A modern Android application built with **Kotlin** and **Jetpack Compose**, prov
 - **⚡ Asynchronous Data Loading**: Fetch data asynchronously with **Kotlin Coroutines**
 - **🖼️ Image Loading**: Efficient image loading with **Coil**
 - **🧩 Dependency Injection**: Use **Hilt** for dependency management
+- **🌐 Kotlin-First Networking**: Built with **Ktor** for type-safe, multiplatform-ready API calls
 
 ---
 
@@ -128,7 +129,7 @@ NewsApp/
 
 ### ⚙️ Data & Networking
 
-- **Networking**: REST APIs via Retrofit
+- **Networking**: REST APIs via Ktor Client
 - **Data Source**: [NewsAPI](https://newsapi.org/) – Global news data provider
 
 ### 🧩 Tooling
