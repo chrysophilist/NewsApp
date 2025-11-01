@@ -4,15 +4,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Article(
-    val id: String?,
-    val author: String?,
-    val content: String?,
-    val description: String?,
-    val publishedAt: String,
+    val id: String? = null,
+    val author: String? = null,
+    val content: String? = null,
+    val description: String? = null,
+    val publishedAt: String = "",
     val source: Source,
-    val title: String,
-    val url: String,
-    val urlToImage: String?
+    val title: String = "",
+    val url: String = "",
+    val urlToImage: String? = null
 ) {
 
     companion object {
