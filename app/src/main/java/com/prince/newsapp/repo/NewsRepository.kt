@@ -3,11 +3,9 @@ package com.prince.newsapp.repo
 import com.prince.newsapp.BuildConfig
 import com.prince.newsapp.models.Article
 import com.prince.newsapp.network.NewsApiService
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 

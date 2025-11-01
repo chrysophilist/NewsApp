@@ -1,5 +1,8 @@
 package com.prince.newsapp.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Article(
     val id: String?,
     val author: String?,
