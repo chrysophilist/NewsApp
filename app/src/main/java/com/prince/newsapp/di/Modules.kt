@@ -5,6 +5,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -17,28 +23,22 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+    fun provideHttpClient() : HttpClient {
+        // Default Engine
+        return HttpClient() {
+
+            // Base URL
+            defaultRequest {
+                url("https://newsapi.org/")
+                contentType(ContentType.Application.Json)
+            }
+
+            // Content Negotiation for JSON serialization
+            install(ContentNegotiation) {
+                json()
+            }
+
         }
-    }
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(loggingInterceptor : HttpLoggingInterceptor) : OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(okHttpClient : OkHttpClient) : Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://newsapi.org/")
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
     }
 
     @Provides
